@@ -6,51 +6,106 @@
   <title>Threadline Studio | Premium T-Shirts</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,600;6..96,700&family=Space+Grotesk:wght@500;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --bg: #f4f2ea;
-      --panel: #fffdf8;
-      --ink: #1e241f;
-      --muted: #556058;
-      --brand: #114b3a;
-      --brand-2: #187357;
-      --accent: #d28f1f;
-      --line: #d9ddd2;
+      --bg: #f6f6f4;
+      --panel: #ffffff;
+      --ink: #161616;
+      --muted: #6a6a6a;
+      --brand: #111111;
+      --brand-2: #2a2a2a;
+      --accent: #8a8a8a;
+      --line: #e3e3e0;
       --ok: #2f7d53;
-      --shadow: 0 18px 50px rgba(17, 39, 31, 0.12);
-      --radius-xl: 28px;
-      --radius-lg: 18px;
-      --radius-md: 12px;
+      --shadow: 0 18px 48px rgba(0, 0, 0, 0.08);
+      --radius-xl: 18px;
+      --radius-lg: 12px;
+      --radius-md: 10px;
     }
 
     * { box-sizing: border-box; }
 
     html, body { margin: 0; padding: 0; }
 
+    html {
+      -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%;
+    }
+
     body {
       font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
       color: var(--ink);
       background:
-        radial-gradient(circle at 12% 6%, rgba(24, 115, 87, 0.08), transparent 38%),
-        radial-gradient(circle at 93% 2%, rgba(210, 143, 31, 0.12), transparent 36%),
+        radial-gradient(circle at 12% 6%, rgba(0, 0, 0, 0.04), transparent 38%),
+        radial-gradient(circle at 93% 2%, rgba(0, 0, 0, 0.05), transparent 36%),
         var(--bg);
       line-height: 1.45;
       min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+      isolation: isolate;
+    }
+
+    body::before,
+    body::after {
+      content: "";
+      position: fixed;
+      inset: auto;
+      width: 42vw;
+      height: 42vw;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: -1;
+      filter: blur(12px);
+      opacity: 0.55;
+      transform: translate3d(0, 0, 0);
+      animation: ambientFloat 18s ease-in-out infinite;
+    }
+
+    body::before {
+      top: -10vw;
+      left: -12vw;
+      width: 100vw;
+      height: 100vh;
+      background-image:
+        linear-gradient(135deg, rgba(246, 246, 244, 0.42), rgba(229, 223, 216, 0.24)),
+        url("assets/icons/back.avif");
+      background-size: cover;
+      background-position: center top;
+      background-repeat: no-repeat;
+      background-blend-mode: screen;
+      filter: saturate(1.08) contrast(0.96) brightness(1.04) sepia(0.1);
+      opacity: 0.2;
+    }
+
+    body::after {
+      right: -10vw;
+      bottom: -12vw;
+      animation-delay: -9s;
+      background: radial-gradient(circle, rgba(201, 186, 171, 0.48) 0%, rgba(162, 162, 156, 0.16) 34%, transparent 70%);
     }
 
     .container {
-      width: min(1160px, calc(100% - 2rem));
+      width: min(1080px, calc(100% - 2rem));
       margin: 0 auto;
     }
 
     .topbar {
       border-bottom: 1px solid var(--line);
-      background: rgba(255, 253, 248, 0.88);
+      background: rgba(255, 255, 255, 0.92);
       backdrop-filter: blur(8px);
       position: sticky;
       top: 0;
       z-index: 30;
+      animation: topbarReveal 900ms cubic-bezier(0.16, 1, 0.3, 1);
+      transition: transform 220ms ease, opacity 220ms ease;
+      will-change: transform;
+    }
+
+    .topbar.is-hidden {
+      transform: translateY(-110%) !important;
+      opacity: 0;
     }
 
     .nav {
@@ -91,9 +146,39 @@
       padding: 0.45rem 0.75rem;
       font-size: 0.82rem;
       font-weight: 700;
-      background: #ffffff;
+      background: #fbfbfa;
       color: var(--brand);
       white-space: nowrap;
+    }
+
+    .lang-switch {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .lang-btn {
+      width: 34px;
+      height: 34px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 0;
+      background: #fbfbfa;
+      display: inline-grid;
+      place-items: center;
+      cursor: pointer;
+    }
+
+    .lang-btn img {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      display: block;
+    }
+
+    .lang-btn.active {
+      border-color: var(--brand);
+      box-shadow: inset 0 0 0 1px var(--brand);
     }
 
     .hero {
@@ -103,11 +188,51 @@
     .hero-shell {
       border: 1px solid var(--line);
       border-radius: var(--radius-xl);
-      background: linear-gradient(135deg, #fffef9 0%, #f7f3e8 100%);
+      background:
+        linear-gradient(135deg, rgba(246, 246, 246, 0.34), rgba(220, 220, 220, 0.22)),
+        url("assets/icons/model.png") center/cover no-repeat;
+      background-blend-mode: soft-light;
       box-shadow: var(--shadow);
       display: grid;
-      gap: 1rem;
-      padding: clamp(1.1rem, 3vw, 2.4rem);
+      gap: 1.2rem;
+      padding: clamp(1.2rem, 3vw, 2.8rem);
+      min-height: clamp(360px, 48vw, 560px);
+      max-width: 1080px;
+      margin: 0 auto;
+      position: relative;
+      overflow: hidden;
+      animation: none;
+    }
+
+    .hero-shell::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 18% 20%, rgba(255, 255, 255, 0.3), transparent 28%),
+        radial-gradient(circle at 92% 10%, rgba(0, 0, 0, 0.12), transparent 24%),
+        linear-gradient(120deg, transparent 0%, rgba(255, 255, 255, 0.16) 46%, transparent 58%);
+      opacity: 0.12;
+      animation: heroShine 9s ease-in-out infinite;
+      pointer-events: none;
+    }
+
+    .hero-shell::after {
+      content: "";
+      position: absolute;
+      inset: auto -12% -18% auto;
+      width: 260px;
+      height: 260px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(17, 17, 17, 0.08), transparent 66%);
+      filter: blur(8px);
+      animation: ambientDrift 14s ease-in-out infinite;
+      pointer-events: none;
+    }
+
+    .hero-shell > div {
+      width: 100%;
+      max-width: 100%;
     }
 
     .eyebrow {
@@ -116,8 +241,8 @@
       margin: 0;
       padding: 0.28rem 0.6rem;
       border-radius: 999px;
-      background: #eaf2ee;
-      color: var(--brand);
+      background: #eeeeeb;
+      color: #222;
       font-size: 0.74rem;
       font-weight: 800;
       letter-spacing: 0.06em;
@@ -125,24 +250,51 @@
     }
 
     .hero h2 {
-      margin: 0.7rem 0 0;
-      font-family: "Space Grotesk", sans-serif;
-      font-size: clamp(1.6rem, 1.1rem + 2.6vw, 3rem);
-      line-height: 1.03;
-      max-width: 15ch;
+      margin: 0.55rem 0 0;
+      font-family: "Bodoni Moda", "Times New Roman", serif;
+      font-size: clamp(2rem, 1.2rem + 3.6vw, 4.6rem);
+      line-height: 0.88;
+      max-width: none;
+      letter-spacing: -0.035em;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: #111111;
+      text-shadow: 0 1px 8px rgba(255, 255, 255, 0.28), 0 8px 22px rgba(0, 0, 0, 0.1);
+      animation: none;
+    }
+
+    .hero h2 span {
+      display: block;
     }
 
     .hero p {
-      margin: 0.75rem 0 1.1rem;
-      max-width: 52ch;
-      color: var(--muted);
-      font-size: clamp(0.97rem, 0.9rem + 0.35vw, 1.08rem);
+      margin: 0.9rem 0 1.2rem;
+      max-width: 30ch;
+      color: #3f3f3f;
+      font-size: clamp(0.98rem, 0.95rem + 0.24vw, 1.08rem);
+      line-height: 1.5;
+      font-weight: 500;
+      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.28);
+    }
+
+    .hero-price {
+      white-space: nowrap;
     }
 
     .hero-cta {
       display: flex;
       flex-wrap: wrap;
       gap: 0.65rem;
+    }
+
+    .hero-cta .btn-main {
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .hero h2 em {
+      font-style: normal;
+      color: var(--brand-2);
     }
 
     .btn {
@@ -158,11 +310,28 @@
       justify-content: center;
       cursor: pointer;
       transition: transform 180ms ease, filter 180ms ease;
+      position: relative;
+      overflow: hidden;
     }
 
     .btn-main {
       background: var(--brand);
-      color: #f5fbf8;
+      color: #fafafa;
+      box-shadow: 0 14px 28px rgba(0, 0, 0, 0.16);
+    }
+
+    .btn-main::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(120deg, transparent 20%, rgba(255, 255, 255, 0.28) 42%, transparent 62%);
+      transform: translateX(-120%);
+      transition: transform 520ms ease;
+    }
+
+    .btn-main:hover::before,
+    .btn-main:focus-visible::before {
+      transform: translateX(120%);
     }
 
     .btn-soft {
@@ -177,52 +346,9 @@
       outline: none;
     }
 
-    .hero-side {
-      border-radius: var(--radius-lg);
-      border: 1px solid #d6ddcf;
-      background: #fff;
-      padding: 0.85rem;
-      display: grid;
-      gap: 0.75rem;
-      align-content: start;
-    }
-
-    .mini-title {
-      margin: 0;
-      font-family: "Space Grotesk", sans-serif;
-      font-size: 1.02rem;
-    }
-
-    .mini-row {
-      display: grid;
-      grid-template-columns: 72px 1fr;
-      gap: 0.75rem;
-      align-items: center;
-      border: 1px solid #e4e9df;
-      border-radius: 12px;
-      padding: 0.5rem;
-    }
-
-    .mini-row img {
-      width: 100%;
-      height: auto;
-      border-radius: 10px;
-      background: #f6f9f4;
-      border: 1px solid #e7ede4;
-    }
-
-    .mini-row strong {
-      display: block;
-      font-size: 0.93rem;
-    }
-
-    .mini-row span {
-      color: var(--muted);
-      font-size: 0.85rem;
-    }
 
     .trust {
-      padding: 0.45rem 0 1.2rem;
+      padding: 0.55rem 0 1.35rem;
     }
 
     .trust-grid {
@@ -233,24 +359,49 @@
 
     .trust-item {
       border: 1px solid var(--line);
-      background: rgba(255, 255, 255, 0.84);
-      border-radius: 13px;
-      padding: 0.75rem 0.85rem;
+      background: rgba(255, 255, 255, 0.82);
+      backdrop-filter: blur(10px);
+      border-radius: 10px;
+      padding: 0.65rem 0.75rem;
+      transition: transform 220ms ease, box-shadow 220ms ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .trust-item::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(120deg, transparent 18%, rgba(255, 255, 255, 0.4) 45%, transparent 60%);
+      transform: translateX(-120%);
+      transition: transform 700ms ease;
+      pointer-events: none;
+    }
+
+    .trust-item:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    .trust-item:hover::after {
+      transform: translateX(120%);
     }
 
     .trust-item strong {
       display: block;
-      font-size: 0.97rem;
+      font-size: 0.86rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
       color: var(--brand);
     }
 
     .trust-item span {
       color: var(--muted);
-      font-size: 0.84rem;
+      font-size: 0.8rem;
     }
 
     .products {
-      padding: 0.35rem 0 2rem;
+      padding: 0.5rem 0 2.4rem;
       scroll-margin-top: 88px;
     }
 
@@ -266,30 +417,36 @@
     .section-head h3 {
       margin: 0;
       font-family: "Space Grotesk", sans-serif;
-      font-size: clamp(1.28rem, 1rem + 1.2vw, 2rem);
+      font-size: clamp(1.55rem, 1.05rem + 2vw, 2.9rem);
+      letter-spacing: -0.05em;
+      text-transform: uppercase;
     }
 
     .section-head p {
       margin: 0;
       color: var(--muted);
-      font-size: 0.94rem;
+      font-size: 0.86rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
     }
 
     .filters {
       display: flex;
       flex-wrap: wrap;
       gap: 0.45rem;
-      margin-bottom: 0.9rem;
+      margin-bottom: 1.15rem;
     }
 
     .filter-btn {
       border: 1px solid #c8d2c3;
       border-radius: 999px;
-      padding: 0.42rem 0.72rem;
+      padding: 0.38rem 0.72rem;
       background: #fff;
       color: var(--ink);
-      font-size: 0.82rem;
-      font-weight: 700;
+      font-size: 0.75rem;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
       cursor: pointer;
     }
 
@@ -302,36 +459,64 @@
     .product-grid {
       display: grid;
       grid-template-columns: 1fr;
-      gap: 0.82rem;
+      gap: 1rem;
     }
 
     .card {
       border: 1px solid var(--line);
       border-radius: var(--radius-lg);
       background: var(--panel);
-      box-shadow: 0 8px 26px rgba(20, 36, 30, 0.08);
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.07);
       display: grid;
-      grid-template-columns: 94px 1fr;
-      gap: 0.85rem;
-      padding: 0.72rem;
-      transition: transform 180ms ease, box-shadow 180ms ease;
+      grid-template-columns: 1fr;
+      gap: 0.7rem;
+      padding: 0.75rem;
+      transition: transform 220ms ease, box-shadow 220ms ease, border-color 220ms ease;
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(247, 247, 245, 0.96));
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(120deg, transparent 22%, rgba(255, 255, 255, 0.42) 48%, transparent 64%);
+      transform: translateX(-140%);
+      transition: transform 760ms ease;
+      pointer-events: none;
     }
 
     .card:hover {
       transform: translateY(-2px);
-      box-shadow: 0 12px 28px rgba(20, 36, 30, 0.13);
+      border-color: #cfcfcb;
+      box-shadow: 0 14px 30px rgba(0, 0, 0, 0.12);
+    }
+
+    .card:hover::before {
+      transform: translateX(140%);
+    }
+
+    .card:focus-visible {
+      outline: 2px solid #1f1f1f;
+      outline-offset: 2px;
     }
 
     .card img {
       width: 100%;
       border-radius: 10px;
-      border: 1px solid #dde5d7;
-      background: #f4f8ef;
+      border: 1px solid #e4e4e1;
+      background: #f1f1ee;
+      aspect-ratio: 4 / 5;
+      object-fit: contain;
+      padding: 0.45rem;
     }
 
     .card h4 {
       margin: 0;
-      font-size: 1rem;
+      font-size: 1.06rem;
+      font-family: "Space Grotesk", sans-serif;
       line-height: 1.2;
     }
 
@@ -361,15 +546,7 @@
     .card p {
       margin: 0;
       color: var(--muted);
-      font-size: 0.86rem;
-    }
-
-    .card .btn {
-      margin-top: 0.55rem;
-      min-height: 38px;
-      padding: 0.45rem 0.8rem;
-      font-size: 0.84rem;
-      width: fit-content;
+      font-size: 0.8rem;
     }
 
     .steps {
@@ -379,10 +556,11 @@
     .steps-shell {
       border: 1px solid var(--line);
       border-radius: var(--radius-xl);
-      background: #fff;
-      padding: 1rem;
+      background: linear-gradient(160deg, rgba(255, 255, 255, 0.92) 0%, rgba(243, 243, 241, 0.95) 100%);
+      padding: 1.15rem;
       display: grid;
       gap: 0.7rem;
+      backdrop-filter: blur(8px);
     }
 
     .steps h3 {
@@ -399,9 +577,36 @@
 
     .step {
       border: 1px solid #e0e6db;
-      border-radius: 14px;
+      border-radius: 10px;
       padding: 0.8rem;
-      background: #fdfefa;
+      background: rgba(255, 255, 255, 0.9);
+      transition: transform 220ms ease, box-shadow 220ms ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .step::before {
+      content: "";
+      position: absolute;
+      inset: auto -28% 0 auto;
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(17, 17, 17, 0.07), transparent 68%);
+      opacity: 0;
+      transform: scale(0.7);
+      transition: opacity 280ms ease, transform 280ms ease;
+      pointer-events: none;
+    }
+
+    .step:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 22px rgba(0, 0, 0, 0.08);
+    }
+
+    .step:hover::before {
+      opacity: 1;
+      transform: scale(1);
     }
 
     .step b {
@@ -418,6 +623,11 @@
 
     .step strong { display: block; margin-bottom: 0.2rem; }
 
+    .step strong {
+      font-family: "Space Grotesk", sans-serif;
+      letter-spacing: -0.03em;
+    }
+
     .step span { color: var(--muted); font-size: 0.88rem; }
 
     .footer {
@@ -429,9 +639,100 @@
 
     .footer strong { color: var(--ink); }
 
+    .footer-main {
+      margin: 0;
+    }
+
+    .footer-links {
+      margin-top: 0.7rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.55rem 0.9rem;
+    }
+
+    .footer-links a {
+      color: var(--ink);
+      text-decoration: underline;
+      text-underline-offset: 2px;
+      font-weight: 600;
+      font-size: 0.85rem;
+    }
+
+    .footer-note {
+      margin-top: 0.7rem;
+      font-size: 0.78rem;
+      color: #6f6f6f;
+      max-width: 84ch;
+    }
+
+    .reveal-item {
+      opacity: 0;
+      transform: translateY(20px) scale(0.98);
+      filter: blur(10px);
+      transition: opacity 900ms cubic-bezier(0.16, 1, 0.3, 1), transform 900ms cubic-bezier(0.16, 1, 0.3, 1), filter 900ms cubic-bezier(0.16, 1, 0.3, 1);
+      will-change: transform, opacity;
+    }
+
+    .reveal-item.revealed {
+      opacity: 1;
+      transform: translateY(0);
+      filter: blur(0);
+    }
+
+    @keyframes heroReveal {
+      from {
+        opacity: 0;
+        transform: translateY(26px) scale(0.99);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes topbarReveal {
+      from {
+        opacity: 0;
+        transform: translateY(-14px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes ambientFloat {
+      0%, 100% {
+        transform: translate3d(0, 0, 0) scale(1);
+      }
+      50% {
+        transform: translate3d(0, 18px, 0) scale(1.05);
+      }
+    }
+
+    @keyframes ambientDrift {
+      0%, 100% {
+        transform: translate3d(0, 0, 0) scale(1);
+      }
+      50% {
+        transform: translate3d(-18px, -10px, 0) scale(1.08);
+      }
+    }
+
+    @keyframes heroShine {
+      0%, 100% {
+        opacity: 0.5;
+        transform: translateX(-2%) scale(1);
+      }
+      50% {
+        opacity: 0.85;
+        transform: translateX(2%) scale(1.01);
+      }
+    }
+
     @media (min-width: 760px) {
       .hero-shell {
-        grid-template-columns: 1.15fr 0.85fr;
+        grid-template-columns: 1fr;
         align-items: start;
       }
 
@@ -452,9 +753,236 @@
       .product-grid {
         grid-template-columns: repeat(3, minmax(0, 1fr));
       }
+    }
+
+    @media (max-width: 759px) {
+      .container {
+        width: min(100% - 1rem, 1080px);
+      }
+
+      .nav {
+        gap: 0.5rem;
+        flex-direction: row;
+        align-items: flex-start;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        padding: 0.55rem 0;
+      }
+
+      .brand {
+        font-size: clamp(0.95rem, 3.2vw, 1.15rem);
+        letter-spacing: 0.015em;
+        max-width: 100%;
+      }
+
+      .brand small {
+        font-size: 0.64rem;
+      }
+
+      .nav-actions {
+        width: 100%;
+        flex-wrap: nowrap;
+        justify-content: space-between;
+        gap: 0.35rem;
+        min-width: 0;
+      }
+
+      .chip {
+        flex: 1 1 0;
+        text-align: center;
+        padding: 0.3rem 0.5rem;
+        font-size: 0.68rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        min-width: 0;
+      }
+
+      .lang-btn {
+        width: 30px;
+        height: 30px;
+      }
+
+      .lang-btn img {
+        width: 17px;
+        height: 17px;
+      }
+
+      .lang-switch {
+        flex: 0 0 auto;
+      }
+
+      .hero {
+        padding: 0.9rem 0 0.8rem;
+      }
+
+      .hero-shell {
+        gap: 0.95rem;
+        padding: 1rem;
+        min-height: 72vh;
+        background-position: center center;
+        align-content: start;
+      }
+
+      .hero-shell > div {
+        max-width: min(62%, 240px);
+        padding: 0;
+        background: transparent;
+        border: 0;
+        backdrop-filter: none;
+      }
+
+      .hero-shell::before {
+        opacity: 0.26;
+      }
+
+      .hero h2 {
+        font-size: clamp(1.12rem, 5.2vw, 1.62rem);
+        line-height: 0.92;
+        max-width: 100%;
+        letter-spacing: -0.012em;
+        text-wrap: balance;
+      }
+
+      .hero p {
+        max-width: 100%;
+        margin: 0.38rem 0 0;
+        font-size: 0.8rem;
+        line-height: 1.34;
+      }
+
+      .hero-cta {
+        width: 100%;
+      }
+
+      .hero-cta .btn {
+        width: 100%;
+      }
+
+      .trust-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .trust-item strong {
+        font-size: 0.82rem;
+        letter-spacing: 0.03em;
+      }
+
+      .trust-item span {
+        font-size: 0.84rem;
+      }
+
+      .section-head h3 {
+        font-size: clamp(1.35rem, 6.6vw, 1.95rem);
+        letter-spacing: -0.03em;
+      }
+
+      .section-head p {
+        font-size: 0.8rem;
+        letter-spacing: 0.045em;
+      }
+
+      .filters {
+        gap: 0.4rem;
+      }
+
+      .filter-btn {
+        flex: 1 1 calc(50% - 0.2rem);
+        font-size: 0.71rem;
+        padding: 0.42rem 0.6rem;
+      }
 
       .card {
+        padding: 0.68rem;
+      }
+
+      .card h4 {
+        font-size: 1rem;
+      }
+
+      .price {
+        font-size: 0.95rem;
+      }
+
+      .size {
+        font-size: 0.72rem;
+      }
+
+      .card p {
+        font-size: 0.84rem;
+        line-height: 1.5;
+      }
+
+      .card .btn {
+        font-size: 0.74rem;
+      }
+
+      .section-head {
+        align-items: flex-start;
+      }
+
+      .section-head p {
+        width: 100%;
+      }
+
+      .steps-shell {
+        padding: 1rem;
+      }
+
+      .steps h3 {
+        font-size: clamp(1.1rem, 5.2vw, 1.45rem);
+      }
+
+      .step-grid {
         grid-template-columns: 1fr;
+      }
+
+      .step span {
+        font-size: 0.84rem;
+        line-height: 1.45;
+      }
+
+      .footer-links {
+        gap: 0.45rem 0.75rem;
+      }
+
+      .footer-links a {
+        font-size: 0.8rem;
+      }
+
+      .footer-note {
+        font-size: 0.74rem;
+      }
+
+      body::before,
+      body::after {
+        opacity: 0.12;
+      }
+    }
+
+    @media (max-width: 520px) {
+      #chipPayment {
+        display: none;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation: none !important;
+        transition: none !important;
+      }
+
+      body::before,
+      body::after,
+      .hero-shell::before,
+      .hero-shell::after,
+      .card::before,
+      .trust-item::after,
+      .step::before,
+      .btn-main::before {
+        display: none !important;
       }
     }
   </style>
@@ -466,8 +994,16 @@
         <small>Premium T-Shirts for everyday wear</small>
       </h1>
       <div class="nav-actions">
-        <span class="chip">Δωρεάν αλλαγή 14 ημερών</span>
-        <span class="chip">Ασφαλής checkout</span>
+        <span class="chip" id="chipReturns">Δωρεάν αλλαγή 14 ημερών</span>
+        <span class="chip" id="chipPayment">Ασφαλής πληρωμή Revolut</span>
+        <div class="lang-switch" role="group" aria-label="Επιλογή γλώσσας">
+          <button type="button" class="lang-btn" data-lang-btn="el" aria-label="Ελληνικά">
+            <img src="https://images.emojiterra.com/google/noto-emoji/unicode-17.0/color/svg/1f1ec-1f1f7.svg" alt="GR" />
+          </button>
+          <button type="button" class="lang-btn" data-lang-btn="en" aria-label="English">
+            <img src="https://images.emojiterra.com/google/noto-emoji/unicode-17.0/color/svg/1f1ec-1f1e7.svg" alt="GB" />
+          </button>
+        </div>
       </div>
     </div>
   </header>
@@ -476,41 +1012,18 @@
     <section class="hero">
       <div class="container hero-shell">
         <div>
-          <p class="eyebrow">Νέα Συλλογή 2026</p>
-          <h2>Καθαρό στυλ, ποιοτικό t-shirt, εμπειρία αγοράς χωρίς ταλαιπωρία.</h2>
-          <p>Διάλεξε σχέδιο, επίλεξε μέγεθος, ολοκλήρωσε την παραγγελία σε λιγότερο από 1 λεπτό.</p>
-          <div class="hero-cta">
-            <a class="btn btn-main" href="#products-title">Αγορά τώρα</a>
-            <a class="btn btn-soft" href="#products-title">Δες συλλογή</a>
-          </div>
+          <h2 id="heroTitle">Essential <span>T-Shirts</span></h2>
+          <p id="heroSubtitle">Καθαρή γραμμή.<br />Σταθερή τιμή<br /><span class="hero-price">19,99&nbsp;€.</span></p>
         </div>
-
-        <aside class="hero-side" aria-label="Best sellers">
-          <h3 class="mini-title">Best Sellers</h3>
-          <div class="mini-row">
-            <img src="assets/icons/a1.png" alt="Urban Legend t-shirt" />
-            <div>
-              <strong>Urban Legend</strong>
-              <span>19,99 €</span>
-            </div>
-          </div>
-          <div class="mini-row">
-            <img src="assets/icons/e1.png" alt="Signature Fit t-shirt" />
-            <div>
-              <strong>Signature Fit</strong>
-              <span>19,99 €</span>
-            </div>
-          </div>
-        </aside>
       </div>
     </section>
 
     <section class="trust" aria-label="Στοιχεία αξιοπιστίας">
       <div class="container trust-grid">
-        <div class="trust-item"><strong>Αποστολή 24-48 ώρες</strong><span>Πανελλαδικά</span></div>
-        <div class="trust-item"><strong>100% βαμβάκι</strong><span>Άνετη εφαρμογή</span></div>
-        <div class="trust-item"><strong>19,99 € όλα</strong><span>Καθαρή τιμή</span></div>
-        <div class="trust-item"><strong>Εύκολη αλλαγή</strong><span>14 ημέρες</span></div>
+        <div class="trust-item reveal-item"><strong id="trust1Title">Αποστολή μέσω ACS</strong><span id="trust1Text">Εντός 5 ημερών σε όλη την Κύπρο</span></div>
+        <div class="trust-item reveal-item"><strong id="trust2Title">100% βαμβάκι</strong><span id="trust2Text">Άνετη εφαρμογή</span></div>
+        <div class="trust-item reveal-item"><strong id="trust3Title">19,99 € όλα</strong><span id="trust3Text">Καθαρή τιμή</span></div>
+        <div class="trust-item reveal-item"><strong id="trust4Title">Σημείωση παραγγελίας</strong><span id="trust4Text">Αυτόματο copy για paste στο Revolut note</span></div>
       </div>
     </section>
 
@@ -518,18 +1031,18 @@
       <div class="container">
         <div class="section-head">
           <h3 id="products-heading">Η συλλογή</h3>
-          <p>5 σχέδια με ίδια τιμή και άμεση διαθεσιμότητα.</p>
+          <p id="productsSub">5 σχέδια με ίδια τιμή και άμεση διαθεσιμότητα.</p>
         </div>
 
         <div class="filters" role="tablist" aria-label="Φίλτρα προϊόντων">
-          <button class="filter-btn active" data-filter="all" type="button">Όλα</button>
-          <button class="filter-btn" data-filter="minimal" type="button">Minimal</button>
-          <button class="filter-btn" data-filter="statement" type="button">Statement</button>
-          <button class="filter-btn" data-filter="fun" type="button">Fun</button>
+          <button class="filter-btn active" data-filter="all" type="button" id="filterAll">Όλα</button>
+          <button class="filter-btn" data-filter="minimal" type="button" id="filterMinimal">Minimal</button>
+          <button class="filter-btn" data-filter="statement" type="button" id="filterStatement">Statement</button>
+          <button class="filter-btn" data-filter="fun" type="button" id="filterFun">Fun</button>
         </div>
 
         <div class="product-grid" id="productGrid">
-          <article class="card" data-category="statement">
+          <article class="card" data-category="statement" data-href="product.html?product=urban-legend" tabindex="0" role="link" aria-label="Urban Legend - Δες προϊόν">
             <img src="assets/icons/a1.png" alt="Urban Legend t-shirt" />
             <div>
               <h4>Urban Legend</h4>
@@ -537,12 +1050,11 @@
                 <span class="price">19,99 €</span>
                 <span class="size">S-XXL</span>
               </div>
-              <p>Καθαρό statement design για δυνατές εμφανίσεις.</p>
-              <a class="btn btn-main" href="product.html?product=urban-legend">Δες προϊόν</a>
+              <p id="descUrban">Καθαρό statement design για δυνατές εμφανίσεις.</p>
             </div>
           </article>
 
-          <article class="card" data-category="fun">
+          <article class="card" data-category="fun" data-href="product.html?product=classic-banter" tabindex="0" role="link" aria-label="Classic Banter - Δες προϊόν">
             <img src="assets/icons/b1.png" alt="Classic Banter t-shirt" />
             <div>
               <h4>Classic Banter</h4>
@@ -550,12 +1062,11 @@
                 <span class="price">19,99 €</span>
                 <span class="size">S-XXL</span>
               </div>
-              <p>Άνετο και ευκολοφόρετο για κάθε μέρα.</p>
-              <a class="btn btn-main" href="product.html?product=classic-banter">Δες προϊόν</a>
+              <p id="descClassic">Άνετο και ευκολοφόρετο για κάθε μέρα.</p>
             </div>
           </article>
 
-          <article class="card" data-category="minimal">
+          <article class="card" data-category="minimal" data-href="product.html?product=easy-mode" tabindex="0" role="link" aria-label="Easy Mode - Δες προϊόν">
             <img src="assets/icons/c1.png" alt="Easy Mode t-shirt" />
             <div>
               <h4>Easy Mode</h4>
@@ -563,12 +1074,11 @@
                 <span class="price">19,99 €</span>
                 <span class="size">S-XXL</span>
               </div>
-              <p>Minimal αισθητική και διαχρονικό ύφος.</p>
-              <a class="btn btn-main" href="product.html?product=easy-mode">Δες προϊόν</a>
+              <p id="descEasy">Minimal αισθητική και διαχρονικό ύφος.</p>
             </div>
           </article>
 
-          <article class="card" data-category="fun">
+          <article class="card" data-category="fun" data-href="product.html?product=one-more-tee" tabindex="0" role="link" aria-label="One More Tee - Δες προϊόν">
             <img src="assets/icons/d1.png" alt="One More Tee t-shirt" />
             <div>
               <h4>One More Tee</h4>
@@ -576,12 +1086,11 @@
                 <span class="price">19,99 €</span>
                 <span class="size">S-XXL</span>
               </div>
-              <p>Fun χαρακτήρας που τραβάει βλέμματα.</p>
-              <a class="btn btn-main" href="product.html?product=one-more-tee">Δες προϊόν</a>
+              <p id="descOneMore">Fun χαρακτήρας που τραβάει βλέμματα.</p>
             </div>
           </article>
 
-          <article class="card" data-category="minimal">
+          <article class="card" data-category="minimal" data-href="product.html?product=signature-fit" tabindex="0" role="link" aria-label="Signature Fit - Δες προϊόν">
             <img src="assets/icons/e1.png" alt="Signature Fit t-shirt" />
             <div>
               <h4>Signature Fit</h4>
@@ -589,8 +1098,7 @@
                 <span class="price">19,99 €</span>
                 <span class="size">S-XXL</span>
               </div>
-              <p>Η πιο safe premium επιλογή για καθημερινό look.</p>
-              <a class="btn btn-main" href="product.html?product=signature-fit">Δες προϊόν</a>
+              <p id="descSignature">Η πιο safe premium επιλογή για καθημερινό look.</p>
             </div>
           </article>
         </div>
@@ -599,11 +1107,12 @@
 
     <section class="steps" aria-labelledby="steps-heading">
       <div class="container steps-shell">
-        <h3 id="steps-heading">Πώς αγοράζεις σε 3 βήματα</h3>
+        <h3 id="steps-heading">Πώς αγοράζεις σε 4 βήματα</h3>
         <div class="step-grid">
-          <article class="step"><b>1</b><strong>Διάλεξε σχέδιο</strong><span>Επίλεξε αυτό που ταιριάζει στο στιλ σου.</span></article>
-          <article class="step"><b>2</b><strong>Βρες μέγεθος</strong><span>Επιλογές από S έως XXL με άνετη εφαρμογή.</span></article>
-          <article class="step"><b>3</b><strong>Ολοκλήρωσε checkout</strong><span>Ασφαλής πληρωμή και γρήγορη αποστολή.</span></article>
+          <article class="step reveal-item"><b>1</b><strong id="step1Title">Διάλεξε σχέδιο</strong><span id="step1Text">Επίλεξε αυτό που ταιριάζει στο στιλ σου.</span></article>
+          <article class="step reveal-item"><b>2</b><strong id="step2Title">Συμπλήρωσε στοιχεία</strong><span id="step2Text">Μέγεθος, ποσότητα και πλήρη διεύθυνση αποστολής Κύπρου.</span></article>
+          <article class="step reveal-item"><b>3</b><strong id="step3Title">Πληρωμή με Revolut</strong><span id="step3Text">Γίνεται αυτόματο copy της σημείωσης και paste στο Revolut note.</span></article>
+          <article class="step reveal-item"><b>4</b><strong id="step4Title">Αποστολή ACS</strong><span id="step4Text">Μετά την πληρωμή, η αποστολή γίνεται εντός 5 ημερών.</span></article>
         </div>
       </div>
     </section>
@@ -611,13 +1120,20 @@
 
   <footer class="footer">
     <div class="container">
-      <strong>Threadline Studio</strong> | Premium t-shirts με καθαρό design, άμεση αποστολή και απλή εμπειρία αγοράς.
+      <p class="footer-main" id="footerMain"><strong>Threadline Studio</strong> | Premium t-shirts με καθαρό design, πληρωμή Revolut και αποστολή ACS στην Κύπρο.</p>
+      <nav class="footer-links" aria-label="Νομικές σελίδες">
+        <a href="terms-and-conditions.html" id="linkTerms">Όροι Χρήσης</a>
+        <a href="privacy-policy.html" id="linkPrivacy">Πολιτική Απορρήτου</a>
+        <a href="returns-policy.html" id="linkReturns">Πολιτική Επιστροφών</a>
+        <a href="cookies-policy.html" id="linkCookies">Πολιτική Cookies</a>
+      </nav>
     </div>
   </footer>
 
   <script>
     const filterButtons = document.querySelectorAll('.filter-btn');
     const cards = document.querySelectorAll('.card');
+    const revealItems = document.querySelectorAll('.reveal-item');
 
     filterButtons.forEach((btn) => {
       btn.addEventListener('click', () => {
@@ -632,6 +1148,272 @@
         });
       });
     });
+
+    cards.forEach((card) => {
+      card.addEventListener('click', () => {
+        const href = card.dataset.href;
+        if (!href) return;
+        window.location.href = href;
+      });
+
+      card.addEventListener('keydown', (event) => {
+        if (event.key !== 'Enter' && event.key !== ' ') return;
+        event.preventDefault();
+        const href = card.dataset.href;
+        if (!href) return;
+        window.location.href = href;
+      });
+    });
+
+    if ('IntersectionObserver' in window) {
+      const revealObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add('revealed');
+          revealObserver.unobserve(entry.target);
+        });
+      }, { threshold: 0.16 });
+
+      revealItems.forEach((item, index) => {
+        item.style.transitionDelay = `${120 + Math.min(index * 110, 550)}ms`;
+        revealObserver.observe(item);
+      });
+    } else {
+      revealItems.forEach((item) => item.classList.add('revealed'));
+    }
+
+  </script>
+
+  <style>
+    .cookie-consent-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(22, 22, 22, 0.46);
+      backdrop-filter: blur(2px);
+      z-index: 9998;
+      display: none;
+    }
+
+    .cookie-consent {
+      position: fixed;
+      left: 50%;
+      bottom: 0.9rem;
+      transform: translateX(-50%);
+      width: min(700px, calc(100% - 1rem));
+      background: #ffffff;
+      border: 1px solid #e3e3e0;
+      border-radius: 12px;
+      box-shadow: 0 18px 48px rgba(0, 0, 0, 0.2);
+      padding: 0.9rem;
+      z-index: 9999;
+      display: none;
+    }
+
+    .cookie-consent p {
+      margin: 0;
+      color: #2f2f2f;
+      font-size: 0.88rem;
+    }
+
+    .cookie-consent p a {
+      color: #111111;
+      font-weight: 700;
+    }
+
+    .cookie-consent-actions {
+      margin-top: 0.65rem;
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    body.consent-open {
+      overflow: hidden;
+    }
+
+    body.consent-open .cookie-consent,
+    body.consent-open .cookie-consent-backdrop {
+      display: block;
+    }
+  </style>
+
+  <div class="cookie-consent-backdrop" aria-hidden="true"></div>
+  <section class="cookie-consent" role="dialog" aria-modal="true" aria-label="Συναίνεση Cookies">
+    <p id="cookieText">Χρησιμοποιούμε cookies για σωστή λειτουργία της σελίδας. Για να συνεχίσεις, πρέπει να αποδεχτείς τους <a href="terms-and-conditions.html">Όρους Χρήσης</a> και την <a href="privacy-policy.html">Πολιτική Απορρήτου</a>.</p>
+    <div class="cookie-consent-actions">
+      <button class="btn btn-main" id="acceptCookiesBtn" type="button">Αποδέχομαι</button>
+    </div>
+  </section>
+
+  <script>
+    const languageButtons = document.querySelectorAll('[data-lang-btn]');
+    const languageKey = 'threadlineLang';
+
+    const i18n = {
+      el: {
+        title: 'Threadline Studio | Premium T-Shirts',
+        chipReturns: 'Δωρεάν αλλαγή 14 ημερών',
+        chipPayment: 'Ασφαλής πληρωμή Revolut',
+        heroTitle: 'Essential <span>T-Shirts</span>',
+        heroSubtitle: 'Καθαρή γραμμή.<br />Σταθερή τιμή<br /><span class="hero-price">19,99&nbsp;€.</span>',
+        trust1Title: 'Αποστολή μέσω ACS',
+        trust1Text: 'Εντός 5 ημερών σε όλη την Κύπρο',
+        trust2Title: '100% βαμβάκι',
+        trust2Text: 'Άνετη εφαρμογή',
+        trust3Title: '19,99 € όλα',
+        trust3Text: 'Καθαρή τιμή',
+        trust4Title: 'Σημείωση παραγγελίας',
+        trust4Text: 'Αυτόματο copy για paste στο Revolut note',
+        'products-heading': 'Η συλλογή',
+        productsSub: '5 σχέδια με ίδια τιμή και άμεση διαθεσιμότητα.',
+        filterAll: 'Όλα',
+        filterMinimal: 'Minimal',
+        filterStatement: 'Statement',
+        filterFun: 'Fun',
+        descUrban: 'Καθαρό statement design για δυνατές εμφανίσεις.',
+        descClassic: 'Άνετο και ευκολοφόρετο για κάθε μέρα.',
+        descEasy: 'Minimal αισθητική και διαχρονικό ύφος.',
+        descOneMore: 'Fun χαρακτήρας που τραβάει βλέμματα.',
+        descSignature: 'Η πιο safe premium επιλογή για καθημερινό look.',
+        'steps-heading': 'Πώς αγοράζεις σε 4 βήματα',
+        step1Title: 'Διάλεξε σχέδιο',
+        step1Text: 'Επίλεξε αυτό που ταιριάζει στο στιλ σου.',
+        step2Title: 'Συμπλήρωσε στοιχεία',
+        step2Text: 'Μέγεθος, ποσότητα και πλήρη διεύθυνση αποστολής Κύπρου.',
+        step3Title: 'Πληρωμή με Revolut',
+        step3Text: 'Γίνεται αυτόματο copy της σημείωσης και paste στο Revolut note.',
+        step4Title: 'Αποστολή ACS',
+        step4Text: 'Μετά την πληρωμή, η αποστολή γίνεται εντός 5 ημερών.',
+        footerMain: '<strong>Threadline Studio</strong> | Premium t-shirts με καθαρό design, πληρωμή Revolut και αποστολή ACS στην Κύπρο.',
+        linkTerms: 'Όροι Χρήσης',
+        linkPrivacy: 'Πολιτική Απορρήτου',
+        linkReturns: 'Πολιτική Επιστροφών',
+        linkCookies: 'Πολιτική Cookies',
+        cookieText: 'Χρησιμοποιούμε cookies για σωστή λειτουργία της σελίδας. Για να συνεχίσεις, πρέπει να αποδεχτείς τους <a href="terms-and-conditions.html">Όρους Χρήσης</a> και την <a href="privacy-policy.html">Πολιτική Απορρήτου</a>.',
+        acceptCookiesBtn: 'Αποδέχομαι',
+        langAria: 'Επιλογή γλώσσας'
+      },
+      en: {
+        title: 'Threadline Studio | Premium T-Shirts',
+        chipReturns: 'Free exchange within 14 days',
+        chipPayment: 'Secure Revolut payment',
+        heroTitle: 'Essential <span>T-Shirts</span>',
+        heroSubtitle: 'Clean lines.<br />Stable price<br /><span class="hero-price">€19.99</span>',
+        trust1Title: 'Shipping via ACS',
+        trust1Text: 'Within 5 days across Cyprus',
+        trust2Title: '100% cotton',
+        trust2Text: 'Comfortable fit',
+        trust3Title: '€19.99 all designs',
+        trust3Text: 'Transparent pricing',
+        trust4Title: 'Order note',
+        trust4Text: 'Automatic copy for paste in Revolut note',
+        'products-heading': 'The Collection',
+        productsSub: '5 designs with the same price and instant availability.',
+        filterAll: 'All',
+        filterMinimal: 'Minimal',
+        filterStatement: 'Statement',
+        filterFun: 'Fun',
+        descUrban: 'Clean statement design for standout looks.',
+        descClassic: 'Comfortable and easy to wear every day.',
+        descEasy: 'Minimal aesthetic with timeless style.',
+        descOneMore: 'Fun character that attracts attention.',
+        descSignature: 'The safest premium choice for everyday looks.',
+        'steps-heading': 'How to buy in 4 steps',
+        step1Title: 'Choose a design',
+        step1Text: 'Pick the one that matches your style.',
+        step2Title: 'Fill in details',
+        step2Text: 'Size, quantity, and full Cyprus shipping address.',
+        step3Title: 'Pay with Revolut',
+        step3Text: 'The order note is copied automatically for the Revolut note field.',
+        step4Title: 'ACS delivery',
+        step4Text: 'After payment, shipping is completed within 5 days.',
+        footerMain: '<strong>Threadline Studio</strong> | Premium t-shirts with clean design, Revolut payment, and ACS shipping in Cyprus.',
+        linkTerms: 'Terms and Conditions',
+        linkPrivacy: 'Privacy Policy',
+        linkReturns: 'Returns Policy',
+        linkCookies: 'Cookies Policy',
+        cookieText: 'We use cookies for proper website functionality. To continue, you need to accept the <a href="terms-and-conditions.html">Terms and Conditions</a> and the <a href="privacy-policy.html">Privacy Policy</a>.',
+        acceptCookiesBtn: 'I Accept',
+        langAria: 'Language selection'
+      }
+    };
+
+    function applyLanguage(lang) {
+      const texts = i18n[lang] || i18n.el;
+      document.documentElement.lang = lang;
+      document.title = texts.title;
+
+      Object.keys(texts).forEach((key) => {
+        if (key === 'title' || key === 'langAria') return;
+        const el = document.getElementById(key);
+        if (!el) return;
+        el.innerHTML = texts[key];
+      });
+
+      languageButtons.forEach((btn) => {
+        const isActive = btn.dataset.langBtn === lang;
+        btn.classList.toggle('active', isActive);
+        btn.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+      });
+    }
+
+    const savedLanguage = localStorage.getItem(languageKey);
+    const initialLanguage = savedLanguage === 'en' || savedLanguage === 'el' ? savedLanguage : 'el';
+    applyLanguage(initialLanguage);
+
+    if (languageButtons.length) {
+      languageButtons.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const lang = btn.dataset.langBtn === 'en' ? 'en' : 'el';
+        localStorage.setItem(languageKey, lang);
+        applyLanguage(lang);
+      });
+      });
+    }
+
+    (() => {
+      const consentKey = "threadlineConsentAcceptedV1";
+      if (localStorage.getItem(consentKey) === "yes") return;
+
+      const acceptBtn = document.getElementById("acceptCookiesBtn");
+      document.body.classList.add("consent-open");
+
+      if (!acceptBtn) return;
+      acceptBtn.addEventListener("click", () => {
+        localStorage.setItem(consentKey, "yes");
+        document.body.classList.remove("consent-open");
+      });
+    })();
+
+    (() => {
+      const topbar = document.querySelector('.topbar');
+      if (!topbar) return;
+
+      let lastY = window.scrollY || 0;
+      let ticking = false;
+
+      const handleScrollDirection = () => {
+        const currentY = Math.max(window.scrollY || 0, 0);
+        const delta = currentY - lastY;
+
+        if (currentY <= 8) {
+          topbar.classList.remove('is-hidden');
+        } else if (delta < -2) {
+          topbar.classList.add('is-hidden');
+        } else if (delta > 2) {
+          topbar.classList.remove('is-hidden');
+        }
+
+        lastY = currentY;
+        ticking = false;
+      };
+
+      window.addEventListener('scroll', () => {
+        if (!ticking) {
+          window.requestAnimationFrame(handleScrollDirection);
+          ticking = true;
+        }
+      }, { passive: true });
+    })();
   </script>
 </body>
 </html>
