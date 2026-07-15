@@ -129,6 +129,8 @@
       font-size: clamp(1rem, 0.86rem + 1vw, 1.5rem);
       letter-spacing: 0.02em;
       text-transform: uppercase;
+      color: var(--brand);
+      text-decoration: none;
     }
 
     .brand small {
@@ -260,6 +262,7 @@
       font-weight: 800;
     }
 
+    
     .product-title {
       margin: 0.6rem 0 0.2rem;
       font-family: "Bodoni Moda", "Times New Roman", serif;
@@ -681,9 +684,9 @@
 <body>
   <header class="topbar">
     <div class="container nav">
-      <p class="brand">Threadline Studio
+      <a class="brand" href="index.html">Threadline Studio
         <small>Premium T-Shirts for everyday wear</small>
-      </p>
+      </a>
       <div class="nav-actions">
         <span class="chip" id="chipReturns">Δωρεάν αλλαγή 14 ημερών</span>
         <span class="chip" id="chipPayment">Ασφαλής πληρωμή Revolut</span>
@@ -701,7 +704,6 @@
 
   <main class="page">
     <div class="container">
-      <a class="back-link" id="backLink" href="index.html#products-title">← Επιστροφή στη συλλογή</a>
       <div class="product-shell">
         <div class="media">
           <img id="productImage" src="assets/icons/a1.png" alt="T-shirt προϊόν" />
