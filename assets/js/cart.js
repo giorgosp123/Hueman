@@ -3,16 +3,16 @@
  * Cart data + shipping address are persisted in localStorage so they carry
  * over between index.html and product.html.
  *
- * Payment: to accept Visa (and other cards) without running a backend, this
- * connects the cart to a Stripe Payment Link with "adjustable quantity"
- * enabled. Every product is priced the same (19,99 €), so the cart's total
- * item count maps 1:1 to the quantity on that single Stripe link.
+ * Payment: checkout is handled by a Stripe Checkout Session created on the
+ * fly by the Netlify function in netlify/functions/create-checkout-session.js.
+ * That function receives the exact cart items/quantities and builds the
+ * session server-side, so the price the customer pays always matches what
+ * they selected on this page (unlike a static Payment Link, which can't be
+ * prefilled with a quantity).
  *
- * SETUP REQUIRED: replace STRIPE_PAYMENT_LINK below with your real Stripe
- * Payment Link URL (Stripe Dashboard > Payment links > create one for the
- * 19,99 € t-shirt, enable "Adjustable quantity", and optionally add a custom
- * text field called "Order note" so customers can paste the note that this
- * cart copies to their clipboard).
+ * SETUP REQUIRED: deploy this site to Netlify and set the STRIPE_SECRET_KEY
+ * environment variable in the Netlify site dashboard (Site configuration >
+ * Environment variables). See netlify/functions/create-checkout-session.js.
  */
 (function () {
   "use strict";
@@ -21,7 +21,7 @@
   const ADDRESS_KEY = "huemanAddress";
   const LANG_KEY = "huemanLang";
 
-  const STRIPE_PAYMENT_LINK = "https://buy.stripe.com/your-payment-link";
+  const CHECKOUT_ENDPOINT = "/.netlify/functions/create-checkout-session";
 
   const CATALOG = {
     "urban-legend": { name: { el: "Urban Legend", en: "Urban Legend" }, price: 19.99, image: "assets/icons/a1.png" },
@@ -44,7 +44,7 @@
       noteLabel: "Σημείωση παραγγελίας:",
       noteHint: "* Η σημείωση αντιγράφηκε αυτόματα στο πρόχειρο (clipboard). Επικόλλησέ τη στο πεδίο σημειώσεων της σελίδας πληρωμής, αν υπάρχει.",
       addressWarning: "Συμπλήρωσε όλα τα πεδία διεύθυνσης (οδός, αριθμός, περιοχή, Τ.Κ., πόλη) πριν την πληρωμή.",
-      stripeWarning: "Ρύθμισε το Stripe Payment Link στο αρχείο assets/js/cart.js για να λειτουργήσει η πληρωμή.",
+      stripeWarning: "Η πληρωμή δεν είναι διαθέσιμη αυτή τη στιγμή. Δοκίμασε ξανά σε λίγο.",
       payBtn: "Πληρωμή με Visa",
       added: "Προστέθηκε στο καλάθι",
       placeholders: {
@@ -68,7 +68,7 @@
       noteLabel: "Order note:",
       noteHint: "* The note was copied automatically to your clipboard. Paste it into the payment page's notes field, if available.",
       addressWarning: "Fill in all address fields (street, number, area, postal code, city) before payment.",
-      stripeWarning: "Set your Stripe Payment Link in assets/js/cart.js so payment can work.",
+      stripeWarning: "Payment isn't available right now. Please try again shortly.",
       payBtn: "Pay with Visa",
       added: "Added to cart",
       placeholders: {
@@ -410,12 +410,6 @@
       return;
     }
     els.addressWarning.hidden = true;
-
-    const missingLink = STRIPE_PAYMENT_LINK.includes("your-payment-link");
-    if (missingLink) {
-      els.stripeWarning.hidden = false;
-      return;
-    }
     els.stripeWarning.hidden = true;
 
     const note = buildOrderNote();
@@ -425,9 +419,22 @@
       // Clipboard can be blocked in some browsers; no hard failure on payment flow.
     }
 
-    const quantity = cartCount();
-    const separator = STRIPE_PAYMENT_LINK.includes("?") ? "&" : "?";
-    window.location.href = `${STRIPE_PAYMENT_LINK}${separator}quantity=${quantity}`;
+    els.payBtn.disabled = true;
+    try {
+      const response = await fetch(CHECKOUT_ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ items, note })
+      });
+      const data = await response.json();
+      if (!response.ok || !data.url) {
+        throw new Error(data.error || "Checkout session failed");
+      }
+      window.location.href = data.url;
+    } catch (err) {
+      els.stripeWarning.hidden = false;
+      els.payBtn.disabled = false;
+    }
   }
 
   function init() {
