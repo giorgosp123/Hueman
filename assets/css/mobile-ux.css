@@ -1,0 +1,163 @@
+/* Shared mobile/tablet usability overrides across the storefront */
+
+@media (max-width: 920px) {
+  .container {
+    width: min(100% - 1.1rem, 1080px) !important;
+  }
+
+  .page {
+    padding: 1rem 0 1.5rem !important;
+  }
+
+  .footer {
+    padding: 1rem 0 1.4rem !important;
+  }
+
+  .hero-shell {
+    min-height: 72vh !important;
+    padding: 1rem !important;
+    gap: 0.95rem !important;
+    background-position: center center !important;
+  }
+
+  .hero-shell > div {
+    max-width: min(62%, 240px) !important;
+  }
+
+  .product-grid {
+    grid-template-columns: 1fr !important;
+    gap: 0.85rem !important;
+  }
+
+  .card {
+    padding: 0.78rem !important;
+  }
+
+  .card p {
+    max-width: none !important;
+  }
+
+  .product-shell {
+    padding: 0.92rem !important;
+    gap: 0.85rem !important;
+  }
+
+  .media {
+    padding: 0.62rem !important;
+  }
+
+  .media img {
+    width: min(240px, 100%) !important;
+  }
+
+  .gallery-thumbs {
+    gap: 0.35rem !important;
+  }
+
+  .description {
+    max-width: 100% !important;
+  }
+
+  .wrap {
+    border-radius: 14px !important;
+    padding: 0.95rem !important;
+  }
+
+  .wrap h2 {
+    margin-top: 1rem !important;
+    line-height: 1.35 !important;
+  }
+
+  select,
+  input,
+  .btn,
+  .lang-btn,
+  .cart-btn,
+  .filter-btn,
+  .gallery-thumb {
+    min-height: 42px;
+  }
+
+  select,
+  input {
+    font-size: 16px !important;
+  }
+
+  .cookie-consent {
+    width: calc(100% - 0.8rem) !important;
+    bottom: 0.5rem !important;
+    border-radius: 10px !important;
+    padding: 0.78rem !important;
+  }
+
+  .cookie-consent p {
+    font-size: 0.83rem !important;
+    line-height: 1.42 !important;
+  }
+
+  .cookie-consent-actions {
+    justify-content: stretch !important;
+  }
+
+  .cookie-consent-actions .btn {
+    width: 100% !important;
+  }
+}
+
+@media (max-width: 759px) {
+  .nav {
+    row-gap: 0.4rem !important;
+  }
+
+  .nav-actions {
+    align-items: center !important;
+  }
+
+  .chip {
+    line-height: 1.2 !important;
+  }
+
+  .hero h2 {
+    line-height: 1 !important;
+  }
+
+  .hero p {
+    font-size: 0.84rem !important;
+  }
+
+  .product-title {
+    line-height: 1 !important;
+  }
+
+  .actions {
+    gap: 0.45rem !important;
+  }
+
+  .actions .btn,
+  .hero-cta .btn,
+  .card .btn {
+    width: 100%;
+  }
+
+  .commerce-column {
+    padding: 0.72rem !important;
+  }
+
+  .commerce-links {
+    gap: 0.36rem !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-shell > div {
+    max-width: min(64%, 230px) !important;
+  }
+
+  .brand {
+    max-width: 100% !important;
+  }
+
+  .brand small {
+    line-height: 1.25;
+  }
+}

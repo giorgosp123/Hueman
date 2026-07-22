@@ -23,37 +23,61 @@ const CATALOG = {
   "signature-fit": { name: "Signature Fit", priceCents: 1999 }
 };
 
-// Allow the GitHub Pages site (a different origin than this Netlify function)
-// to call this endpoint from the browser.
-const CORS_HEADERS = {
-  "Access-Control-Allow-Origin": "https://giorgosp123.github.io",
-  "Access-Control-Allow-Methods": "POST, OPTIONS",
-  "Access-Control-Allow-Headers": "Content-Type"
-};
+// Allow known storefront origins to call this endpoint from the browser.
+const ALLOWED_ORIGINS = new Set([
+  "https://giorgosp123.github.io",
+  "https://hue-man.netlify.app",
+  "http://localhost:8888",
+  "http://localhost:3000"
+]);
+
+function isAllowedOrigin(origin) {
+  if (!origin) return false;
+  if (ALLOWED_ORIGINS.has(origin)) return true;
+
+  // Allow Netlify deploy previews, e.g. https://deploy-preview-12--hue-man.netlify.app
+  return /^https:\/\/[a-z0-9-]+--hue-man\.netlify\.app$/i.test(origin);
+}
+
+function getCorsHeaders(event) {
+  const requestOrigin = event && event.headers ? (event.headers.origin || "") : "";
+  const allowOrigin = isAllowedOrigin(requestOrigin)
+    ? requestOrigin
+    : "https://giorgosp123.github.io";
+
+  return {
+    "Access-Control-Allow-Origin": allowOrigin,
+    "Access-Control-Allow-Methods": "POST, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type",
+    Vary: "Origin"
+  };
+}
 
 exports.handler = async (event) => {
+  const corsHeaders = getCorsHeaders(event);
+
   if (event.httpMethod === "OPTIONS") {
-    return { statusCode: 204, headers: CORS_HEADERS, body: "" };
+    return { statusCode: 204, headers: corsHeaders, body: "" };
   }
 
   if (event.httpMethod !== "POST") {
-    return { statusCode: 405, headers: CORS_HEADERS, body: JSON.stringify({ error: "Method not allowed" }) };
+    return { statusCode: 405, headers: corsHeaders, body: JSON.stringify({ error: "Method not allowed" }) };
   }
 
   if (!process.env.STRIPESECRETKEY) {
-    return { statusCode: 500, headers: CORS_HEADERS, body: JSON.stringify({ error: "STRIPESECRETKEY is not configured" }) };
+    return { statusCode: 500, headers: corsHeaders, body: JSON.stringify({ error: "STRIPESECRETKEY is not configured" }) };
   }
 
   let payload;
   try {
     payload = JSON.parse(event.body || "{}");
   } catch {
-    return { statusCode: 400, headers: CORS_HEADERS, body: JSON.stringify({ error: "Invalid JSON body" }) };
+    return { statusCode: 400, headers: corsHeaders, body: JSON.stringify({ error: "Invalid JSON body" }) };
   }
 
   const items = Array.isArray(payload.items) ? payload.items : [];
   if (items.length === 0) {
-    return { statusCode: 400, headers: CORS_HEADERS, body: JSON.stringify({ error: "Cart is empty" }) };
+    return { statusCode: 400, headers: corsHeaders, body: JSON.stringify({ error: "Cart is empty" }) };
   }
 
   try {
@@ -81,7 +105,7 @@ exports.handler = async (event) => {
 
     const origin = event.headers.origin || event.headers.referer || process.env.SITE_URL;
     if (!origin) {
-      return { statusCode: 500, headers: CORS_HEADERS, body: JSON.stringify({ error: "Could not determine site origin" }) };
+      return { statusCode: 500, headers: corsHeaders, body: JSON.stringify({ error: "Could not determine site origin" }) };
     }
     const baseUrl = origin.replace(/\/$/, "");
 
@@ -103,10 +127,10 @@ exports.handler = async (event) => {
 
     return {
       statusCode: 200,
-      headers: CORS_HEADERS,
+      headers: corsHeaders,
       body: JSON.stringify({ url: session.url })
     };
   } catch (err) {
-    return { statusCode: 500, headers: CORS_HEADERS, body: JSON.stringify({ error: err.message || "Checkout session failed" }) };
+    return { statusCode: 500, headers: corsHeaders, body: JSON.stringify({ error: err.message || "Checkout session failed" }) };
   }
 };
